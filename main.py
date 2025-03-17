@@ -1,4 +1,5 @@
 import os
+import re
 
 def replace_exam_name_in_file(file_path, old_exam_name, new_exam_name):
     """Replace old_exam_name with new_exam_name in the file."""
@@ -25,10 +26,14 @@ def main():
         print("Could not find examName in the currentExamName.txt file.")
         return
 
-    # Get the new exam name from the user
-    new_exam_name = input(f"Enter the new exam name (old: {old_exam_name}): ").strip()
-    print(f"Old exam Name: {old_exam_name}")
-    print(f"New exam Name: {new_exam_name}")
+    # Get the new exam name from the environment variable
+    new_exam_name = os.environ.get('EXAM_NAME', '').strip()
+
+    if not new_exam_name:
+        print("No new exam name provided.")
+        return
+
+    print(f"Old exam Name: {old_exam_name}, New Exam Name: {new_exam_name}")
 
     # Replace examName in all files within ./test and ./try directories
     for root, dirs, files in os.walk('./test'):
