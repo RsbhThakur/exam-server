@@ -8,7 +8,7 @@ on:
     inputs:
       examName:
         required: true
-        default: 'sc-300'  # Default value (optional)
+        default: 'sc-300'
 
 jobs:
   build-and-deploy:
@@ -30,14 +30,20 @@ jobs:
       run: |
         npm install express puppeteer cheerio axios  # Include any other dependencies
 
-    # Step 4: Run the PowerShell script with the user-defined examName
+    # Step 4: Install Python dependencies (if any)
+    - name: Install Python dependencies
+      run: |
+        # Ensure Python is available
+        python --version
+
+    # Step 5: Run the PowerShell script with the user-defined examName
     - name: Run PowerShell script
       run: |
         # Pass the examName input from the GitHub Actions workflow to PowerShell
         $env:examName = "${{ github.event.inputs.examName }}"  # Get the examName input
         ./start.ps1
 
-    # Step 5: Commit the changes with the message "added {examName}"
+    # Step 6: Commit the changes with the message "added {examName}"
     - name: Commit changes
       run: |
         git config user.name "GitHub Actions"
