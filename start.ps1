@@ -1,9 +1,6 @@
 # Prompt for new exam name
 $examName = Read-Host "Enter the new examName"
 
-# Run the main.py script to replace old examName with new examName
-python ./main.py
-
 # Run test.js and test.py
 node ./test/test.js
 python ./test/test.py
