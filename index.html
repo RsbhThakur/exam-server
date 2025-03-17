@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Content</title>
+    <link rel="stylesheet" href="assets/style.css"> <!-- Shared CSS -->
+</head>
+<body>
+    <div id="exam-container"></div> <!-- Where content will be loaded -->
+
+    <script>
+        // Function to get the exam name from the URL
+        function getExamNameFromUrl() {
+            const path = window.location.pathname;
+            const examName = path.split("/").pop(); // Get the last part of the URL (e.g., exam1, exam2)
+            return examName;
+        }
+
+        // Function to load exam content based on examName
+        function loadExamContent(examName) {
+            const examFolder = `./${examName}`;  // Folder based on examName
+            const examHtmlFile = `${examFolder}/${examName}.html`;
+            const examCssFile = `${examFolder}/${examName}.css`;
+
+            // Load the exam HTML file (via AJAX)
+            fetch(examHtmlFile)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("exam-container").innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById("exam-container").innerHTML = "Exam content not found!";
+                    console.error(err);
+                });
+
+            // Dynamically load CSS for the exam
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = examCssFile;
+            document.head.appendChild(link);
+        }
+
+        // Get examName from URL and load content
+        const examName = getExamNameFromUrl();
+        if (examName) {
+            loadExamContent(examName);
+        } else {
+            document.getElementById("exam-container").innerHTML = "Exam name not provided!";
+        }
+    </script>
+</body>
+</html>
