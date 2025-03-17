@@ -27,6 +27,8 @@ def main():
 
     # Get the new exam name from the user
     new_exam_name = input(f"Enter the new exam name (old: {old_exam_name}): ").strip()
+    print(f"Old exam Name: {old_exam_name}")
+    print(f"New exam Name: {new_exam_name}")
 
     # Replace examName in all files within ./test and ./try directories
     for root, dirs, files in os.walk('./test'):
