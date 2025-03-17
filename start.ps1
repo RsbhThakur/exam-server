@@ -6,7 +6,6 @@ node ./test/test.js
 python ./test/test.py
 
 # Clean up and move files to the appropriate directories
-Remove-Item "./${examName}-links.txt" -Force
 Move-Item "./${examName}.txt" -Destination "./try"
 
 # Run the try.js and try1.js files
