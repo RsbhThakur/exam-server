@@ -16,4 +16,4 @@ node ./try/try1.js
 # Create the examName folder and move the snapshots and HTML to that folder
 New-Item -ItemType Directory -Force -Path "./$examName"
 Move-Item "./try/snapshots" -Destination "./$examName"
-Move-Item "./try/$examName.html" -Destination "./$examName/$examName.html"
+Move-Item "./try/$examName.html" -Destination "./$examName/index.html"
