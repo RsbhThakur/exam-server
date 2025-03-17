@@ -1,0 +1,42 @@
+name: Build and Deploy Exam Project
+
+on:
+  push:
+    branches:
+      - master  # Change to master if you're using the master branch
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest  # Use Windows environment to run PowerShell scripts
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Node.js environment
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Choose the node version that suits your project
+
+    # Step 3: Install Node.js dependencies
+    - name: Install Node.js dependencies
+      run: |
+        npm install express puppeteer cheerio  # Add any other dependencies you need
+
+    # Step 4: Run the PowerShell script to do all operations
+    - name: Run PowerShell script
+      run: |
+        # Run PowerShell script (.ps1 file) in Windows environment
+        ./start.ps1  # Make sure the script exists and is executable
+
+    # Step 5: Commit the changes with the message "added {examName}"
+    - name: Commit changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git commit -m "Updated ${EXAM_NAME}" || echo "No changes to commit"
+        git push origin master  # Pushed to master branch instead of main
