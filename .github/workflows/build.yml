@@ -1,6 +1,8 @@
 name: Build Exam Content
 
 on:
+  schedule:
+    - cron: '0 0 2 * *'  # Runs at midnight on the 2nd of every month
   workflow_dispatch:
 
 jobs:
