@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
 // Configuration
 const linksDir = './links';
 const dataDir = './data';
-const concurrency = 5; // Number of exams to process simultaneously
+const concurrency = 5; // Number of parallel pages
 
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
@@ -31,31 +31,6 @@ async function processUrl(page, url, examDir, snapshotsDir, index) {
   }
 }
 
-// Function to process a single exam
-async function processExam(examFile, browser) {
-  const examName = path.basename(examFile, '.txt');
-  const examDir = path.join(dataDir, examName);
-  const snapshotsDir = path.join(examDir, 'snapshots');
-
-  // Create exam and snapshots directories
-  if (!fs.existsSync(examDir)) fs.mkdirSync(examDir);
-  if (!fs.existsSync(snapshotsDir)) fs.mkdirSync(snapshotsDir);
-
-  const urls = fs.readFileSync(path.join(linksDir, examFile), 'utf-8').split('\n').filter(line => line.trim() !== '');
-  const questionsData = [];
-
-  const page = await browser.newPage();
-  for (let index = 0; index < urls.length; index++) {
-    const result = await processUrl(page, urls[index], examDir, snapshotsDir, index);
-    if (result) questionsData.push(result);
-  }
-  await page.close();
-
-  // Generate HTML for the exam
-  await generateHTML(examDir, examName, questionsData);
-  console.log(`📁 Snapshots and HTML saved in: ${examDir}`);
-}
-
 // Main function
 async function main() {
   const browser = await puppeteer.launch({
@@ -67,14 +42,54 @@ async function main() {
   // Get all exam files from the links directory
   const examFiles = fs.readdirSync(linksDir).filter(file => file.endsWith('.txt'));
 
-  // Process exams in parallel
-  const chunks = [];
-  for (let i = 0; i < examFiles.length; i += concurrency) {
-    chunks.push(examFiles.slice(i, i + concurrency));
+  // Create a queue of all URLs across all exams
+  const queue = [];
+  for (const examFile of examFiles) {
+    const examName = path.basename(examFile, '.txt');
+    const examDir = path.join(dataDir, examName);
+    const snapshotsDir = path.join(examDir, 'snapshots');
+
+    // Create exam and snapshots directories
+    if (!fs.existsSync(examDir)) fs.mkdirSync(examDir);
+    if (!fs.existsSync(snapshotsDir)) fs.mkdirSync(snapshotsDir);
+
+    const urls = fs.readFileSync(path.join(linksDir, examFile), 'utf-8').split('\n').filter(line => line.trim() !== '');
+    urls.forEach((url, index) => {
+      queue.push({ url, examDir, snapshotsDir, index });
+    });
   }
 
-  for (const chunk of chunks) {
-    await Promise.all(chunk.map(examFile => processExam(examFile, browser)));
+  // Process URLs dynamically
+  const pages = await Promise.all(Array.from({ length: concurrency }, () => browser.newPage()));
+  const results = [];
+
+  while (queue.length > 0) {
+    const tasks = [];
+    for (let i = 0; i < Math.min(concurrency, queue.length); i++) {
+      const { url, examDir, snapshotsDir, index } = queue.shift();
+      tasks.push(processUrl(pages[i], url, examDir, snapshotsDir, index));
+    }
+    const batchResults = await Promise.all(tasks);
+    results.push(...batchResults.filter(Boolean));
+  }
+
+  // Close all pages
+  await Promise.all(pages.map(page => page.close()));
+
+  // Generate HTML for each exam
+  const examData = {};
+  results.forEach(result => {
+    const examName = path.basename(path.dirname(result.question));
+    if (!examData[examName]) {
+      examData[examName] = [];
+    }
+    examData[examName].push(result);
+  });
+
+  for (const [examName, questionsData] of Object.entries(examData)) {
+    const examDir = path.join(dataDir, examName);
+    await generateHTML(examDir, examName, questionsData);
+    console.log(`📁 Snapshots and HTML saved in: ${examDir}`);
   }
 
   await browser.close();
