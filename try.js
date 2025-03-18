@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
 // Configuration
 const linksDir = './links';
 const dataDir = './data';
-const concurrency = 7; // Number of exams to process simultaneously
+const concurrency = 7; // Number of parallel exams
 
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
@@ -67,10 +67,19 @@ async function main() {
   // Get all exam files from the links directory
   const examFiles = fs.readdirSync(linksDir).filter(file => file.endsWith('.txt'));
 
-  // Process exams in parallel
+  // Sort exams by size (ascending)
+  const sortedExamFiles = examFiles
+    .map(file => ({
+      file,
+      size: fs.readFileSync(path.join(linksDir, file), 'utf-8').split('\n').filter(line => line.trim() !== '').length
+    }))
+    .sort((a, b) => a.size - b.size)
+    .map(entry => entry.file);
+
+  // Process exams in chunks
   const chunks = [];
-  for (let i = 0; i < examFiles.length; i += concurrency) {
-    chunks.push(examFiles.slice(i, i + concurrency));
+  for (let i = 0; i < sortedExamFiles.length; i += concurrency) {
+    chunks.push(sortedExamFiles.slice(i, i + concurrency));
   }
 
   for (const chunk of chunks) {
