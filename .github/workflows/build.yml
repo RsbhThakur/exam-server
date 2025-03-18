@@ -14,32 +14,24 @@ jobs:
         with:
           token: ${{ secrets.PAT }}  # Use PAT for checkout
 
-      - name: Check if update was completed
-        id: check-update
-        run: |
-          echo "run_build=true" >> $GITHUB_OUTPUT
-
       - name: Set up Node.js
-        if: steps.check-update.outputs.run_build == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
-        if: steps.check-update.outputs.run_build == 'true'
         run: |
           npm install
 
       - name: Run try.js
-        if: steps.check-update.outputs.run_build == 'true'
         run: |
           node try.js
 
       - name: Check for changes
-        if: steps.check-update.outputs.run_build == 'true'
         id: check-changes
         run: |
-          if git diff --quiet; then
+          git add data/
+          if git diff --cached --quiet; then
             echo "No changes to commit."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
@@ -48,10 +40,9 @@ jobs:
           fi
 
       - name: Commit changes
-        if: steps.check-update.outputs.run_build == 'true' && steps.check-changes.outputs.has_changes == 'true'
+        if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add data/
           git commit -m "Generated snapshots and HTML"
           git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
