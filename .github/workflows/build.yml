@@ -17,13 +17,7 @@ jobs:
       - name: Check if update was completed
         id: check-update
         run: |
-          if [ -f update_completed.txt ]; then
-            echo "Update was completed. Proceeding with build."
-            echo "run_build=true" >> $GITHUB_OUTPUT
-          else
-            echo "Update was not completed. Skipping build."
-            echo "run_build=false" >> $GITHUB_OUTPUT
-          fi
+          echo "run_build=true" >> $GITHUB_OUTPUT
 
       - name: Set up Node.js
         if: steps.check-update.outputs.run_build == 'true'
