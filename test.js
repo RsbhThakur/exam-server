@@ -2,6 +2,9 @@ const fs = require('fs');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+// Concurrency configuration
+const concurrency = 5; // Number of URLs to process simultaneously
+
 // Database file
 const dbFile = 'database_temp.json';
 let db = {};
@@ -35,35 +38,50 @@ async function fetchWithRetries(url, retries = 2) {
   }
 }
 
-// Function to scrape all links
-async function scrapeAllLinks() {
-  for (let i = 1; i <= 1356; i++) { // Adjust the range as needed
-    const url = `https://www.examtopics.com/discussions/microsoft/${i}/`;
-    console.log(`Fetching: ${url}`);
+// Function to scrape a single page
+async function scrapePage(pageNumber) {
+  const url = `https://www.examtopics.com/discussions/microsoft/${pageNumber}/`;
+  console.log(`Fetching: ${url}`);
 
-    // Fetch the URL with retries
-    const response = await fetchWithRetries(url);
-    if (!response) continue; // Skip if all attempts fail
+  // Fetch the URL with retries
+  const response = await fetchWithRetries(url);
+  if (!response) return; // Skip if all attempts fail
 
-    const $ = cheerio.load(response.data);
+  const $ = cheerio.load(response.data);
 
-    // Find all anchor tags <a> and extract href
-    $('a').each((index, element) => {
-      const href = $(element).attr('href');
-      if (href && href.includes('/view/')) {
-        const fullUrl = `https://www.examtopics.com${href}`;
-        const examName = extractExamName(fullUrl);
+  // Find all anchor tags <a> and extract href
+  $('a').each((index, element) => {
+    const href = $(element).attr('href');
+    if (href && href.includes('/view/')) {
+      const fullUrl = `https://www.examtopics.com${href}`;
+      const examName = extractExamName(fullUrl);
 
-        if (examName) {
-          if (!db[examName]) {
-            db[examName] = []; // Initialize array for new exam
-          }
-          if (!db[examName].includes(fullUrl)) {
-            db[examName].push(fullUrl); // Add unique URLs
-          }
+      if (examName) {
+        if (!db[examName]) {
+          db[examName] = []; // Initialize array for new exam
+        }
+        if (!db[examName].includes(fullUrl)) {
+          db[examName].push(fullUrl); // Add unique URLs
         }
       }
-    });
+    }
+  });
+}
+
+// Function to process pages in batches
+async function processPages() {
+  const totalPages = 1356; // Total number of pages to scrape
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1); // [1, 2, ..., 1356]
+
+  // Split page numbers into chunks based on concurrency
+  const chunks = [];
+  for (let i = 0; i < pageNumbers.length; i += concurrency) {
+    chunks.push(pageNumbers.slice(i, i + concurrency));
+  }
+
+  // Process each chunk concurrently
+  for (const chunk of chunks) {
+    await Promise.all(chunk.map(pageNumber => scrapePage(pageNumber)));
   }
 
   // Save the updated database
@@ -72,4 +90,4 @@ async function scrapeAllLinks() {
 }
 
 // Run the scraping function
-scrapeAllLinks();
+processPages().catch(console.error);
