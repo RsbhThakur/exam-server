@@ -29,36 +29,74 @@ jobs:
           npm install
           pip install requests beautifulsoup4
 
-      - name: Run test.js and commit changes
+      - name: Run test.js
         run: |
           node test.js
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected. Committing..."
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check-changes.outputs.has_changes == 'true'
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add database_temp.json
           git commit -m "Updated database_temp.json"
           git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
 
-      - name: Run test.py and commit changes
+      - name: Run test.py
         run: |
           python test.py
+
+      - name: Check for changes
+        id: check-changes-2
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected. Committing..."
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check-changes-2.outputs.has_changes == 'true'
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add database.json
           git commit -m "Updated database.json"
           git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
 
-      - name: Run split.py and commit changes
+      - name: Run split.py
         run: |
           python split.py
+
+      - name: Check for changes
+        id: check-changes-3
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected. Committing..."
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check-changes-3.outputs.has_changes == 'true'
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add links/
           git commit -m "Generated exam-specific link files"
-          git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
-
-      - name: Create update completion flag
-        run: |
-          echo "Update completed on $(date)" > update_completed.txt
-          git add update_completed.txt
-          git commit -m "Added update completion flag"
           git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
