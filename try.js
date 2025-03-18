@@ -42,8 +42,6 @@ async function main() {
   // Get all exam files from the links directory
   const examFiles = fs.readdirSync(linksDir).filter(file => file.endsWith('.txt'));
 
-  // Create a queue of all URLs across all exams
-  const queue = [];
   for (const examFile of examFiles) {
     const examName = path.basename(examFile, '.txt');
     const examDir = path.join(dataDir, examName);
@@ -54,40 +52,28 @@ async function main() {
     if (!fs.existsSync(snapshotsDir)) fs.mkdirSync(snapshotsDir);
 
     const urls = fs.readFileSync(path.join(linksDir, examFile), 'utf-8').split('\n').filter(line => line.trim() !== '');
-    urls.forEach((url, index) => {
-      queue.push({ url, examDir, snapshotsDir, index });
-    });
-  }
+    const questionsData = [];
 
-  // Process URLs dynamically
-  const pages = await Promise.all(Array.from({ length: concurrency }, () => browser.newPage()));
-  const results = [];
+    // Create a pool of Puppeteer pages
+    const pages = await Promise.all(Array.from({ length: concurrency }, () => browser.newPage()));
 
-  while (queue.length > 0) {
-    const tasks = [];
-    for (let i = 0; i < Math.min(concurrency, queue.length); i++) {
-      const { url, examDir, snapshotsDir, index } = queue.shift();
-      tasks.push(processUrl(pages[i], url, examDir, snapshotsDir, index));
+    // Process URLs dynamically
+    const queue = urls.map((url, index) => ({ url, index }));
+    while (queue.length > 0) {
+      const tasks = [];
+      for (let i = 0; i < Math.min(concurrency, queue.length); i++) {
+        const { url, index } = queue.shift();
+        const page = pages[i % concurrency];
+        tasks.push(processUrl(page, url, examDir, snapshotsDir, index));
+      }
+      const batchResults = await Promise.all(tasks);
+      questionsData.push(...batchResults.filter(Boolean));
     }
-    const batchResults = await Promise.all(tasks);
-    results.push(...batchResults.filter(Boolean));
-  }
 
-  // Close all pages
-  await Promise.all(pages.map(page => page.close()));
+    // Close all pages
+    await Promise.all(pages.map(page => page.close()));
 
-  // Generate HTML for each exam
-  const examData = {};
-  results.forEach(result => {
-    const examName = path.basename(path.dirname(result.question));
-    if (!examData[examName]) {
-      examData[examName] = [];
-    }
-    examData[examName].push(result);
-  });
-
-  for (const [examName, questionsData] of Object.entries(examData)) {
-    const examDir = path.join(dataDir, examName);
+    // Generate HTML for the exam
     await generateHTML(examDir, examName, questionsData);
     console.log(`📁 Snapshots and HTML saved in: ${examDir}`);
   }
