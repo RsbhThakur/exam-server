@@ -14,7 +14,14 @@ if (fs.existsSync(dbFile)) {
 // Function to extract exam name from URL
 function extractExamName(url) {
   const match = url.match(/exam-(.*?)-topic/);
-  return match ? match[1] : null; // Returns exam name (e.g., "sc-300") or null
+  if (match) {
+    const examName = match[1];
+    // Exclude exam names that start with a number
+    if (!/^\d/.test(examName)) {
+      return examName; // Return exam name if it doesn't start with a number
+    }
+  }
+  return null; // Return null for invalid exam names
 }
 
 // Function to scrape all links
