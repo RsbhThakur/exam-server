@@ -6,11 +6,6 @@ const cheerio = require('cheerio');
 const dbFile = 'database_temp.json';
 let db = {};
 
-// Load existing database
-if (fs.existsSync(dbFile)) {
-  db = JSON.parse(fs.readFileSync(dbFile, 'utf-8'));
-}
-
 // Function to extract exam name from URL
 function extractExamName(url) {
   const match = url.match(/exam-(.*?)-topic/);
