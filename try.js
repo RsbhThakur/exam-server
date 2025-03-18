@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
 // Configuration
 const linksDir = './links';
 const dataDir = './data';
-const concurrency = 5; // Number of parallel pages
+const concurrency = 7; // Number of parallel pages
 
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
