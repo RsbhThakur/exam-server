@@ -55,10 +55,3 @@ jobs:
           git add data/
           git commit -m "Generated snapshots and HTML"
           git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
-
-      - name: Remove update completion flag
-        if: steps.check-update.outputs.run_build == 'true' && steps.check-changes.outputs.has_changes == 'true'
-        run: |
-          git rm update_completed.txt
-          git commit -m "Removed update completion flag"
-          git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
