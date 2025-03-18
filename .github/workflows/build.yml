@@ -3,7 +3,7 @@ name: Build Exam Content
 on:
   schedule:
     - cron: '0 0 2 * *'  # Runs at midnight on the 2nd of every month
-  workflow_dispatch:
+  workflow_dispatch:     # Allows manual triggering
 
 jobs:
   build:
@@ -11,21 +11,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}  # Use PAT for checkout
+
+      - name: Check if update was completed
+        id: check-update
+        run: |
+          if [ -f update_completed.txt ]; then
+            echo "Update was completed. Proceeding with build."
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "Update was not completed. Skipping build."
+            echo "run_build=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set up Node.js
+        if: steps.check-update.outputs.run_build == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
+        if: steps.check-update.outputs.run_build == 'true'
         run: |
           npm install
 
       - name: Run try.js and commit changes
+        if: steps.check-update.outputs.run_build == 'true'
         run: |
           node try.js
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add data/
           git commit -m "Generated snapshots and HTML"
-          git push
+          git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+
+      - name: Remove update completion flag
+        if: steps.check-update.outputs.run_build == 'true'
+        run: |
+          git rm update_completed.txt
+          git commit -m "Removed update completion flag"
+          git push https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
