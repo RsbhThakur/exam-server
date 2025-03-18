@@ -5,13 +5,59 @@ const puppeteer = require('puppeteer');
 // Configuration
 const linksDir = './links';
 const dataDir = './data';
+const concurrency = 5; // Number of exams to process simultaneously
 
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
+// Function to process a single URL
+async function processUrl(page, url, examDir, snapshotsDir, index) {
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+
+    // Capture question snapshot
+    const questionPath = path.join(snapshotsDir, `q${index}.png`);
+    await page.screenshot({ path: questionPath, fullPage: true });
+
+    // Capture discussion snapshot
+    const discussionPath = path.join(snapshotsDir, `d${index}.png`);
+    await page.screenshot({ path: discussionPath, fullPage: true });
+
+    console.log(`✅ Processed: ${url}`);
+    return { question: `q${index}.png`, discussion: `d${index}.png`, url };
+  } catch (error) {
+    console.log(`❌ Failed: ${url} - ${error.message}`);
+    return null;
+  }
+}
+
+// Function to process a single exam
+async function processExam(examFile, browser) {
+  const examName = path.basename(examFile, '.txt');
+  const examDir = path.join(dataDir, examName);
+  const snapshotsDir = path.join(examDir, 'snapshots');
+
+  // Create exam and snapshots directories
+  if (!fs.existsSync(examDir)) fs.mkdirSync(examDir);
+  if (!fs.existsSync(snapshotsDir)) fs.mkdirSync(snapshotsDir);
+
+  const urls = fs.readFileSync(path.join(linksDir, examFile), 'utf-8').split('\n').filter(line => line.trim() !== '');
+  const questionsData = [];
+
+  const page = await browser.newPage();
+  for (let index = 0; index < urls.length; index++) {
+    const result = await processUrl(page, urls[index], examDir, snapshotsDir, index);
+    if (result) questionsData.push(result);
+  }
+  await page.close();
+
+  // Generate HTML for the exam
+  await generateHTML(examDir, examName, questionsData);
+  console.log(`📁 Snapshots and HTML saved in: ${examDir}`);
+}
+
 // Main function
 async function main() {
-  // Launch Puppeteer with the --no-sandbox argument
   const browser = await puppeteer.launch({
     headless: "new",
     args: ['--no-sandbox', '--disable-setuid-sandbox'], // Disable sandbox
@@ -21,47 +67,14 @@ async function main() {
   // Get all exam files from the links directory
   const examFiles = fs.readdirSync(linksDir).filter(file => file.endsWith('.txt'));
 
-  for (const examFile of examFiles) {
-    const examName = path.basename(examFile, '.txt');
-    const examDir = path.join(dataDir, examName);
-    const snapshotsDir = path.join(examDir, 'snapshots');
+  // Process exams in parallel
+  const chunks = [];
+  for (let i = 0; i < examFiles.length; i += concurrency) {
+    chunks.push(examFiles.slice(i, i + concurrency));
+  }
 
-    // Create exam and snapshots directories
-    if (!fs.existsSync(examDir)) fs.mkdirSync(examDir);
-    if (!fs.existsSync(snapshotsDir)) fs.mkdirSync(snapshotsDir);
-
-    const urls = fs.readFileSync(path.join(linksDir, examFile), 'utf-8').split('\n').filter(line => line.trim() !== '');
-    const page = await browser.newPage();
-    const questionsData = [];
-
-    for (const [index, url] of urls.entries()) {
-      try {
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-
-        // Capture question snapshot
-        const questionPath = path.join(snapshotsDir, `q${index}.png`);
-        await page.screenshot({ path: questionPath, fullPage: true });
-
-        // Capture discussion snapshot
-        const discussionPath = path.join(snapshotsDir, `d${index}.png`);
-        await page.screenshot({ path: discussionPath, fullPage: true });
-
-        // Save data
-        questionsData.push({
-          question: `q${index}.png`,
-          discussion: `d${index}.png`,
-          url
-        });
-
-        console.log(`✅ Processed: ${examName} Q${index + 1}`);
-      } catch (error) {
-        console.log(`❌ Failed: ${url} - ${error.message}`);
-      }
-    }
-
-    // Generate HTML for the exam
-    await generateHTML(examDir, examName, questionsData);
-    console.log(`📁 Snapshots and HTML saved in: ${examDir}`);
+  for (const chunk of chunks) {
+    await Promise.all(chunk.map(examFile => processExam(examFile, browser)));
   }
 
   await browser.close();
