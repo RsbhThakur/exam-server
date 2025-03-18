@@ -24,36 +24,51 @@ function extractExamName(url) {
   return null; // Return null for invalid exam names
 }
 
+// Function to fetch a URL with retries
+async function fetchWithRetries(url, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const response = await axios.get(url);
+      return response; // Success
+    } catch (error) {
+      console.error(`Attempt ${i + 1} failed for ${url}:`, error.message);
+      if (i === retries) {
+        console.error(`All attempts failed for ${url}. Skipping...`);
+        return null; // Failure
+      }
+    }
+  }
+}
+
 // Function to scrape all links
 async function scrapeAllLinks() {
   for (let i = 1; i <= 1356; i++) { // Adjust the range as needed
     const url = `https://www.examtopics.com/discussions/microsoft/${i}/`;
     console.log(`Fetching: ${url}`);
 
-    try {
-      const response = await axios.get(url);
-      const $ = cheerio.load(response.data);
+    // Fetch the URL with retries
+    const response = await fetchWithRetries(url);
+    if (!response) continue; // Skip if all attempts fail
 
-      // Find all anchor tags <a> and extract href
-      $('a').each((index, element) => {
-        const href = $(element).attr('href');
-        if (href && href.includes('/view/')) {
-          const fullUrl = `https://www.examtopics.com${href}`;
-          const examName = extractExamName(fullUrl);
+    const $ = cheerio.load(response.data);
 
-          if (examName) {
-            if (!db[examName]) {
-              db[examName] = []; // Initialize array for new exam
-            }
-            if (!db[examName].includes(fullUrl)) {
-              db[examName].push(fullUrl); // Add unique URLs
-            }
+    // Find all anchor tags <a> and extract href
+    $('a').each((index, element) => {
+      const href = $(element).attr('href');
+      if (href && href.includes('/view/')) {
+        const fullUrl = `https://www.examtopics.com${href}`;
+        const examName = extractExamName(fullUrl);
+
+        if (examName) {
+          if (!db[examName]) {
+            db[examName] = []; // Initialize array for new exam
+          }
+          if (!db[examName].includes(fullUrl)) {
+            db[examName].push(fullUrl); // Add unique URLs
           }
         }
-      });
-    } catch (error) {
-      console.error(`Error fetching ${url}:`, error.message);
-    }
+      }
+    });
   }
 
   // Save the updated database
