@@ -11,7 +11,12 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
 // Main function
 async function main() {
-  const browser = await puppeteer.launch({ headless: "new", timeout: 60000 });
+  // Launch Puppeteer with the --no-sandbox argument
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Disable sandbox
+    timeout: 60000
+  });
 
   // Get all exam files from the links directory
   const examFiles = fs.readdirSync(linksDir).filter(file => file.endsWith('.txt'));
@@ -62,7 +67,7 @@ async function main() {
   await browser.close();
 }
 
-// Helper: Generate HTML (using your original try1.js format)
+// Helper: Generate HTML
 async function generateHTML(examDir, examName, data) {
   const html = `<!DOCTYPE html>
 <html>
