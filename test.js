@@ -14,9 +14,9 @@ function extractExamName(url) {
   const match = url.match(/exam-(.*?)-topic/);
   if (match) {
     const examName = match[1];
-    // Exclude exam names that start with a number
-    if (!/^\d/.test(examName)) {
-      return examName; // Return exam name if it doesn't start with a number
+    // Only include exam names that start with "sc"
+    if (examName.startsWith('sc')) {
+      return examName; // Return exam name if it starts with "sc"
     }
   }
   return null; // Return null for invalid exam names
