@@ -10,6 +10,16 @@ const concurrency = 7; // Number of parallel exams
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
+// Function to get the bounding box of an element
+async function getElementBounds(page, selector) {
+  return await page.evaluate((selector) => {
+    const element = document.querySelector(selector);
+    if (!element) return null;
+    const { x, y, width, height } = element.getBoundingClientRect();
+    return { x, y, width, height };
+  }, selector);
+}
+
 // Function to process a single URL
 async function processUrl(page, url, examDir, snapshotsDir, index) {
   try {
@@ -17,11 +27,47 @@ async function processUrl(page, url, examDir, snapshotsDir, index) {
 
     // Capture question snapshot
     const questionPath = path.join(snapshotsDir, `q${index}.png`);
-    await page.screenshot({ path: questionPath, fullPage: true });
+    const questionSelector = '.discussion-header-container';
+    await page.waitForSelector(questionSelector, { visible: true, timeout: 15000 });
+    const questionBounds = await getElementBounds(page, questionSelector);
+    if (questionBounds) {
+      await page.screenshot({ path: questionPath, clip: questionBounds });
+    } else {
+      console.log(`❌ Question selector not found: ${url}`);
+      return null;
+    }
+
+    // Click the "Reveal Answer" button and capture the answer
+    const answerButtonSelector = '.reveal-solution';
+    await page.waitForSelector(answerButtonSelector, { visible: true, timeout: 15000 });
+    await page.click(answerButtonSelector); // Click to reveal the answer
 
     // Capture discussion snapshot
     const discussionPath = path.join(snapshotsDir, `d${index}.png`);
-    await page.screenshot({ path: discussionPath, fullPage: true });
+    const discussionSelector = '.discussion-page-comments-section';
+    await page.waitForSelector(discussionSelector, { visible: true, timeout: 15000 });
+    
+    // Ensure the element is fully loaded and not clipped by any overflow or max-height
+    await page.waitForFunction(
+      'document.querySelector(".discussion-page-comments-section").scrollHeight > 0',
+      { timeout: 30000 }
+    );
+
+    const discussionBounds = await getElementBounds(page, discussionSelector);
+    if (discussionBounds) {
+      await page.screenshot({
+        path: discussionPath,
+        clip: {
+          x: discussionBounds.x,
+          y: discussionBounds.y,
+          width: discussionBounds.width,
+          height: Math.max(discussionBounds.height, 1000) // Increase height if needed
+        }
+      });
+    } else {
+      console.log(`❌ Discussion selector not found: ${url}`);
+      return null;
+    }
 
     console.log(`✅ Processed: ${url}`);
     return { question: `q${index}.png`, discussion: `d${index}.png`, url };
