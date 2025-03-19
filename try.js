@@ -28,7 +28,7 @@ async function processUrl(page, url, examDir, snapshotsDir, index) {
     // Capture question snapshot
     const questionPath = path.join(snapshotsDir, `q${index}.png`);
     const questionSelector = '.discussion-header-container';
-    await page.waitForSelector(questionSelector, { visible: true, timeout: 15000 });
+    await page.waitForSelector(questionSelector, { visible: true, timeout: 30000 });
     const questionBounds = await getElementBounds(page, questionSelector);
     if (questionBounds) {
       await page.screenshot({ path: questionPath, clip: questionBounds });
@@ -39,13 +39,13 @@ async function processUrl(page, url, examDir, snapshotsDir, index) {
 
     // Click the "Reveal Answer" button and capture the answer
     const answerButtonSelector = '.reveal-solution';
-    await page.waitForSelector(answerButtonSelector, { visible: true, timeout: 15000 });
+    await page.waitForSelector(answerButtonSelector, { visible: true, timeout: 30000 });
     await page.click(answerButtonSelector); // Click to reveal the answer
 
     // Capture discussion snapshot
     const discussionPath = path.join(snapshotsDir, `d${index}.png`);
     const discussionSelector = '.discussion-page-comments-section';
-    await page.waitForSelector(discussionSelector, { visible: true, timeout: 15000 });
+    await page.waitForSelector(discussionSelector, { visible: true, timeout: 30000 });
     
     // Ensure the element is fully loaded and not clipped by any overflow or max-height
     await page.waitForFunction(
