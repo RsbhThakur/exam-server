@@ -23,12 +23,12 @@ async function getElementBounds(page, selector) {
 // Function to process a single URL
 async function processUrl(page, url, examDir, snapshotsDir, index) {
   try {
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 120000 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 600000 });
 
     // Capture question snapshot
     const questionPath = path.join(snapshotsDir, `q${index}.png`);
     const questionSelector = '.discussion-header-container';
-    await page.waitForSelector(questionSelector, { visible: true, timeout: 30000 });
+    await page.waitForSelector(questionSelector, { visible: true, timeout: 120000 });
     const questionBounds = await getElementBounds(page, questionSelector);
     if (questionBounds) {
       await page.screenshot({ path: questionPath, clip: questionBounds });
@@ -39,13 +39,13 @@ async function processUrl(page, url, examDir, snapshotsDir, index) {
 
     // Click the "Reveal Answer" button and capture the answer
     const answerButtonSelector = '.reveal-solution';
-    await page.waitForSelector(answerButtonSelector, { visible: true, timeout: 30000 });
+    await page.waitForSelector(answerButtonSelector, { visible: true, timeout: 120000 });
     await page.click(answerButtonSelector); // Click to reveal the answer
 
     // Capture discussion snapshot
     const discussionPath = path.join(snapshotsDir, `d${index}.png`);
     const discussionSelector = '.discussion-page-comments-section';
-    await page.waitForSelector(discussionSelector, { visible: true, timeout: 30000 });
+    await page.waitForSelector(discussionSelector, { visible: true, timeout: 120000 });
     
     // Ensure the element is fully loaded and not clipped by any overflow or max-height
     await page.waitForFunction(
@@ -107,7 +107,7 @@ async function main() {
   const browser = await puppeteer.launch({
     headless: "new",
     args: ['--no-sandbox', '--disable-setuid-sandbox'], // Disable sandbox
-    timeout: 60000
+    timeout: 120000
   });
 
   // Get all exam files from the links directory
