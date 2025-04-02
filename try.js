@@ -23,7 +23,7 @@ async function getElementBounds(page, selector) {
 // Function to process a single URL
 async function processUrl(page, url, examDir, snapshotsDir, index) {
   try {
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 120000 });
 
     // Capture question snapshot
     const questionPath = path.join(snapshotsDir, `q${index}.png`);
