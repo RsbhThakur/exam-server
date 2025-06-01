@@ -177,6 +177,7 @@ https://www.examtopics.com/discussions/microsoft/view/151120-exam-sc-400-topic-2
 https://www.examtopics.com/discussions/microsoft/view/150493-exam-sc-400-topic-2-question-81-discussion/
 https://www.examtopics.com/discussions/microsoft/view/150494-exam-sc-400-topic-2-question-82-discussion/
 https://www.examtopics.com/discussions/microsoft/view/169144-exam-sc-400-topic-2-question-83-discussion/
+https://www.examtopics.com/discussions/microsoft/view/303220-exam-sc-400-topic-2-question-84-discussion/
 https://www.examtopics.com/discussions/microsoft/view/169143-exam-sc-400-topic-2-question-86-discussion/
 https://www.examtopics.com/discussions/microsoft/view/155737-exam-sc-400-topic-2-question-87-discussion/
 https://www.examtopics.com/discussions/microsoft/view/79611-exam-sc-400-topic-3-question-1-discussion/
@@ -225,8 +226,8 @@ https://www.examtopics.com/discussions/microsoft/view/65567-exam-sc-400-topic-4-
 https://www.examtopics.com/discussions/microsoft/view/125182-exam-sc-400-topic-4-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125136-exam-sc-400-topic-4-question-2-discussion/
 https://www.examtopics.com/discussions/microsoft/view/53804-exam-sc-400-topic-4-question-2-discussion/
-https://www.examtopics.com/discussions/microsoft/view/58274-exam-sc-400-topic-4-question-3-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125183-exam-sc-400-topic-4-question-3-discussion/
+https://www.examtopics.com/discussions/microsoft/view/58274-exam-sc-400-topic-4-question-3-discussion/
 https://www.examtopics.com/discussions/microsoft/view/68264-exam-sc-400-topic-4-question-4-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125137-exam-sc-400-topic-4-question-4-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125139-exam-sc-400-topic-4-question-5-discussion/
@@ -248,6 +249,7 @@ https://www.examtopics.com/discussions/microsoft/view/138068-exam-sc-400-topic-4
 https://www.examtopics.com/discussions/microsoft/view/151098-exam-sc-400-topic-4-question-21-discussion/
 https://www.examtopics.com/discussions/microsoft/view/150840-exam-sc-400-topic-4-question-22-discussion/
 https://www.examtopics.com/discussions/microsoft/view/151644-exam-sc-400-topic-4-question-23-discussion/
+https://www.examtopics.com/discussions/microsoft/view/303481-exam-sc-400-topic-4-question-24-discussion/
 https://www.examtopics.com/discussions/microsoft/view/169734-exam-sc-400-topic-4-question-25-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125596-exam-sc-400-topic-5-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/53441-exam-sc-400-topic-5-question-1-discussion/
@@ -289,16 +291,18 @@ https://www.examtopics.com/discussions/microsoft/view/151755-exam-sc-400-topic-5
 https://www.examtopics.com/discussions/microsoft/view/149820-exam-sc-400-topic-5-question-35-discussion/
 https://www.examtopics.com/discussions/microsoft/view/151756-exam-sc-400-topic-5-question-36-discussion/
 https://www.examtopics.com/discussions/microsoft/view/149821-exam-sc-400-topic-5-question-37-discussion/
+https://www.examtopics.com/discussions/microsoft/view/303545-exam-sc-400-topic-5-question-39-discussion/
 https://www.examtopics.com/discussions/microsoft/view/155222-exam-sc-400-topic-5-question-40-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156869-exam-sc-400-topic-5-question-41-discussion/
 https://www.examtopics.com/discussions/microsoft/view/154915-exam-sc-400-topic-5-question-42-discussion/
+https://www.examtopics.com/discussions/microsoft/view/303547-exam-sc-400-topic-5-question-43-discussion/
 https://www.examtopics.com/discussions/microsoft/view/155223-exam-sc-400-topic-5-question-44-discussion/
 https://www.examtopics.com/discussions/microsoft/view/68265-exam-sc-400-topic-6-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125144-exam-sc-400-topic-6-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125143-exam-sc-400-topic-6-question-2-discussion/
 https://www.examtopics.com/discussions/microsoft/view/57953-exam-sc-400-topic-6-question-2-discussion/
-https://www.examtopics.com/discussions/microsoft/view/59589-exam-sc-400-topic-6-question-3-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125146-exam-sc-400-topic-6-question-3-discussion/
+https://www.examtopics.com/discussions/microsoft/view/59589-exam-sc-400-topic-6-question-3-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125145-exam-sc-400-topic-6-question-4-discussion/
 https://www.examtopics.com/discussions/microsoft/view/68266-exam-sc-400-topic-6-question-4-discussion/
 https://www.examtopics.com/discussions/microsoft/view/125619-exam-sc-400-topic-6-question-5-discussion/
