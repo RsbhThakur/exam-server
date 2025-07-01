@@ -94,6 +94,11 @@ https://www.examtopics.com/discussions/microsoft/view/156023-exam-sc-300-topic-1
 https://www.examtopics.com/discussions/microsoft/view/153437-exam-sc-300-topic-1-question-95-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156541-exam-sc-300-topic-1-question-95-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156542-exam-sc-300-topic-1-question-96-discussion/
+https://www.examtopics.com/discussions/microsoft/view/304695-exam-sc-300-topic-1-question-97-discussion/
+https://www.examtopics.com/discussions/microsoft/view/304686-exam-sc-300-topic-1-question-98-discussion/
+https://www.examtopics.com/discussions/microsoft/view/305403-exam-sc-300-topic-1-question-99-discussion/
+https://www.examtopics.com/discussions/microsoft/view/304697-exam-sc-300-topic-1-question-100-discussion/
+https://www.examtopics.com/discussions/microsoft/view/304689-exam-sc-300-topic-1-question-101-discussion/
 https://www.examtopics.com/discussions/microsoft/view/153521-exam-sc-300-topic-2-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/51617-exam-sc-300-topic-2-question-2-discussion/
 https://www.examtopics.com/discussions/microsoft/view/51924-exam-sc-300-topic-2-question-3-discussion/
@@ -193,6 +198,7 @@ https://www.examtopics.com/discussions/microsoft/view/154516-exam-sc-300-topic-2
 https://www.examtopics.com/discussions/microsoft/view/155224-exam-sc-300-topic-2-question-100-discussion/
 https://www.examtopics.com/discussions/microsoft/view/153308-exam-sc-300-topic-2-question-101-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156413-exam-sc-300-topic-2-question-102-discussion/
+https://www.examtopics.com/discussions/microsoft/view/157148-exam-sc-300-topic-2-question-103-discussion/
 https://www.examtopics.com/discussions/microsoft/view/153251-exam-sc-300-topic-2-question-104-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156578-exam-sc-300-topic-2-question-105-discussion/
 https://www.examtopics.com/discussions/microsoft/view/155218-exam-sc-300-topic-2-question-106-discussion/
@@ -212,6 +218,7 @@ https://www.examtopics.com/discussions/microsoft/view/157167-exam-sc-300-topic-2
 https://www.examtopics.com/discussions/microsoft/view/156458-exam-sc-300-topic-2-question-120-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156945-exam-sc-300-topic-2-question-121-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156459-exam-sc-300-topic-2-question-122-discussion/
+https://www.examtopics.com/discussions/microsoft/view/305243-exam-sc-300-topic-2-question-125-discussion/
 https://www.examtopics.com/discussions/microsoft/view/153439-exam-sc-300-topic-2-question-127-discussion/
 https://www.examtopics.com/discussions/microsoft/view/54839-exam-sc-300-topic-3-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/132371-exam-sc-300-topic-3-question-2-discussion/
@@ -270,6 +277,7 @@ https://www.examtopics.com/discussions/microsoft/view/156514-exam-sc-300-topic-3
 https://www.examtopics.com/discussions/microsoft/view/156601-exam-sc-300-topic-3-question-58-discussion/
 https://www.examtopics.com/discussions/microsoft/view/153458-exam-sc-300-topic-3-question-59-discussion/
 https://www.examtopics.com/discussions/microsoft/view/156602-exam-sc-300-topic-3-question-60-discussion/
+https://www.examtopics.com/discussions/microsoft/view/304675-exam-sc-300-topic-3-question-63-discussion/
 https://www.examtopics.com/discussions/microsoft/view/154980-exam-sc-300-topic-4-question-1-discussion/
 https://www.examtopics.com/discussions/microsoft/view/52849-exam-sc-300-topic-4-question-2-discussion/
 https://www.examtopics.com/discussions/microsoft/view/52850-exam-sc-300-topic-4-question-3-discussion/
